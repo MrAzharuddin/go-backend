@@ -6,6 +6,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 var users = []model.User{
@@ -17,6 +19,10 @@ var users = []model.User{
 
 
 func GetUsers(c *gin.Context){
+	span := trace.SpanFromContext(c.Request.Context())
+	span.SetAttributes(attribute.String("controller", "books"))
+	span.AddEvent("This is a sample event", trace.WithAttributes(attribute.Int("pid", 4328), attribute.String("sampleAttribute", "Test")))
+	
 	c.JSON(http.StatusCreated, gin.H{
 		"message":"success",
 		"data":users,
